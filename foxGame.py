@@ -15,6 +15,8 @@ numTries=0
 
 # Dictionary to store buttons
 buttons = {}
+hasStarted = False
+
 
 def get_three_letter_words(grid, row, col):
     directions = [
@@ -65,17 +67,18 @@ def checkForFox(b):
 
 # Function to handle button click
 def button_clicked(row, col):
-    global currentIndex
+    global currentIndex, hasStarted
     if board[col][row] == "-":
         button = buttons[(col, row)]
         board[col][row] = letters[currentIndex]
         button.configure(text=letters[currentIndex], hover_color="green", fg_color="green")  # Change the text when clicked
         currentIndex += 1
         checkForFox(board)
+        hasStarted = True
 
 # Function to reset the board
 def reset_board():
-    global currentIndex, board, letters, numTries, numTriesLabel
+    global currentIndex, board, letters, numTries, numTriesLabel, hasStarted
     currentIndex = 0
     letters = ["f", "f", "f", "f", "f", "o", "o", "o", "o", "o", "o", "x", "x", "x", "x", "x"]
     random.shuffle(letters)
@@ -88,11 +91,13 @@ def reset_board():
             
               # Reset text and color
 
-    numTries += 1
+    if(hasStarted):
+        numTries += 1
+        hasStarted = False
     numTriesLabel.configure(text=f"Number of tries: {numTries}")
 
 def reset_board_diagonal():
-    global currentIndex, board, letters, numTries, numTriesLabel
+    global currentIndex, board, letters, numTries, numTriesLabel, hasStarted
     currentIndex = 0
     letters = ["f", "f", "f", "f", "f", "o", "o", "x", "x", "x", "x", "x"]
     random.shuffle(letters)
@@ -112,7 +117,9 @@ def reset_board_diagonal():
                 buttons[tmp].configure(fg_color="green",hover_color="green")
               # Reset text and color
 
-    numTries += 1
+    if(hasStarted):
+        numTries += 1
+        hasStarted = False
     numTriesLabel.configure(text=f"Number of tries: {numTries}")
 
 # Create a 4x4 grid of buttons
